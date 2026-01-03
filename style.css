@@ -113,6 +113,7 @@ nav {
   background: linear-gradient(rgba(33, 81, 76, 0.7), rgba(33, 81, 76, 0.7)), url("./images/global3.jpg");
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   color: var(--white);
