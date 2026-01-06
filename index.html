@@ -352,13 +352,9 @@
             </div>
           </div>
           <div>
-            <form class="contact-form" action="https://formsubmit.co/xantspace.dev@gmail.com" method="POST">
+            <form class="contact-form" id="contact-form">
               <input type="text" name="name" id="user-name" placeholder="Your Name" required />
               <input type="email" name="email" id="user-email" placeholder="Email Address" required />
-              <!-- Hidden input for email subject -->
-              <input type="hidden" name="_subject" value="New Inquiry from Website">
-              <!-- Hidden input to disable captcha (optional, remove if unwanted) -->
-              <input type="hidden" name="_captcha" value="false">
               
               <!-- EmailJS compatible fields -->
               <input type="hidden" name="from_name" id="from_name" value="">
@@ -367,12 +363,12 @@
               <div class="form-group full">
                 <select name="service" required>
                   <option value="">Select Service of Interest</option>
-                  <option value="surveying">Surveying & Geomatics</option>
-                  <option value="gis">GIS Services</option>
-                  <option value="engineering">
+                  <option value="Surveying">Surveying & Geomatics</option>
+                  <option value="GIS Services">GIS Services</option>
+                  <option value="Engineering">
                     Engineering & Construction
                   </option>
-                  <option value="planning">Urban Planning</option>
+                  <option value="Planning">Urban Planning</option>
                 </select>
               </div>
               <div class="form-group full">
@@ -493,9 +489,11 @@
       if (form) {
         form.addEventListener("submit", async (e) => {
           e.preventDefault();
+          console.log("Form submission started");
           
           // 1. Validate form validity
           if (!form.checkValidity()) {
+              console.log("Form validation failed");
               form.reportValidity();
               return;
           }
@@ -503,7 +501,10 @@
           const submitBtn = form.querySelector(".btn-submit");
           
           // 2. Prevent race conditions
-          if (submitBtn.disabled) return;
+          if (submitBtn.disabled) {
+            console.log("Submit button already disabled - preventing duplicate submission");
+            return;
+          }
 
           const originalBtnText = submitBtn.textContent;
           submitBtn.textContent = "Sending...";
@@ -511,46 +512,43 @@
           submitBtn.setAttribute("aria-busy", "true");
 
           try {
-              const formData = new FormData(form);
+              // Check if EmailJS is loaded
+              if (!window.emailjs) {
+                throw new Error("Email service not loaded. Please refresh the page and try again.");
+              }
+
+              // Populate EmailJS-specific fields
+              const userName = form.querySelector('#user-name').value;
+              const userEmail = form.querySelector('#user-email').value;
               
-              // 3. Robust Fetch Request
-              const response = await fetch("https://formsubmit.co/ajax/xantspace.dev@gmail.com", {
-                  method: "POST",
-                  body: formData,
-                  headers: { 
-                      'Accept': 'application/json' 
-                  }
-              });
+              form.querySelector('#from_name').value = userName;
+              form.querySelector('#reply_to').value = userEmail;
+              
+              console.log("Sending emails via EmailJS...");
+              console.log(`Client: ${userName} (${userEmail})`);
 
-              if (!response.ok) {
-                  throw new Error(`Network error: ${response.status}`);
-              }
+              // Send BOTH emails (company notification + client auto-reply)
+              // EmailJS allows sending to multiple templates
+              
+              // 1. Send notification to company
+              console.log("Sending company notification...");
+              const companyEmail = await emailjs.sendForm(
+                "service_je65qs3", 
+                "template_zl4i6il",  // Your company notification template
+                form
+              );
+              console.log("Company notification sent!", companyEmail);
 
-              const data = await response.json();
+              // 2. Send auto-reply to client
+              console.log("Sending client auto-reply...");
+              const clientEmail = await emailjs.sendForm(
+                "service_je65qs3", 
+                "template_bofccje",  // You can use same template or create a separate one
+                form
+              );
+              console.log("Client auto-reply sent!", clientEmail);
 
-              if (data.success === "false") {
-                  throw new Error(data.message || "Submission rejected by server");
-              }
-
-              // 5. Success! Now try Auto-reply (Non-blocking)
-              try {
-                if (window.emailjs) {
-                   // Populate EmailJS-specific fields
-                   const userName = form.querySelector('#user-name').value;
-                   const userEmail = form.querySelector('#user-email').value;
-                   
-                   form.querySelector('#from_name').value = userName;
-                   form.querySelector('#reply_to').value = userEmail;
-                   
-                   // Send auto-reply email
-                   await emailjs.sendForm("service_je65qs3", "template_bofccje", form);
-                   console.log("Auto-reply sent successfully!");
-                }
-              } catch (emailError) {
-                console.warn("Auto-reply failed. Check credentials:", emailError);
-              }
-
-              // 6. Success State with SweetAlert2
+              // Success State with SweetAlert2
               Swal.fire({
                 icon: 'success',
                 title: 'Message Sent!',
@@ -563,18 +561,21 @@
               form.reset();
               
           } catch (error) {
-              // 5. Error Handling with SweetAlert2
+              // Error Handling with SweetAlert2
               console.error('Submission Error:', error);
+              console.error('Error message:', error.message);
+              console.error('Error stack:', error.stack);
+              
               Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Unable to send message. Please check your internet connection or contact us directly.',
+                text: error.message || 'Unable to send message. Please check your internet connection or contact us directly.',
                 confirmButtonText: 'Try Again',
                 confirmButtonColor: '#d33',
                 footer: '<a href="mailto:madu@1stgeomatics.com">Email us directly</a>'
               });
           } finally {
-              // 6. Cleanup & Reset State
+              // Cleanup & Reset State
               submitBtn.textContent = originalBtnText;
               submitBtn.disabled = false;
               submitBtn.removeAttribute("aria-busy");
