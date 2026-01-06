@@ -119,6 +119,14 @@ nav {
   color: var(--white);
   padding-top: 80px;
 }
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 60px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
 .hero-content {
   max-width: 800px;
 }
