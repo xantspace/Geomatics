@@ -674,18 +674,18 @@ footer {
 /* SweetAlert2 Mobile Responsiveness */
 @media (max-width: 768px) {
   .swal2-popup {
-    width: 85% !important;
+    width: 50% !important;
     padding: 1rem !important;
-    font-size: 0.9rem !important;
+    font-size: 19px !important;
   }
   
   .swal2-title {
-    font-size: 1.3rem !important;
+    font-size: 19px !important;
     padding: 0.5rem 0 !important;
   }
   
   .swal2-html-container {
-    font-size: 0.85rem !important;
+    font-size: 19px !important;
     margin: 0.5rem 0 !important;
   }
   
