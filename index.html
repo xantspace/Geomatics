@@ -34,6 +34,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <link rel="stylesheet" href="style.css">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
       
@@ -280,7 +283,7 @@
             <p>Chief Executive Officer</p>
           </div>
           <div class="leader-card reveal">
-            <div class="leader-img"><i class="fas fa-user-tie"></i></div>
+            <div class="leader-img"><img src="images/MADU.jpg" alt="CEO Image"></div>
             <h3>Richard Ogbonna</h3>
             <p>Project Manager</p>
           </div>
@@ -309,7 +312,7 @@
                 <i class="fas fa-envelope"></i> madu@1stgeomatics.com
               </div>
               <div>
-                <i class="fas fa-envelope"></i> Richard@1sthgeomatics.com
+                <i class="fas fa-envelope"></i> Richard@1stgeomatics.com
               </div>
             </div>
           </div>
@@ -390,7 +393,7 @@
             <h4>Contact Us</h4>
             <div class="footer-contact">
               <p><i class="fas fa-map-marker-alt"></i> 156 Ikot-Ekpene Road, Aba, Abia State, Nigeria</p>
-              <p><i class="fas fa-phone"></i> +234 (0) 706 991 9893</p>
+              <p><i class="fas fa-phone"></i> +234 (0) 703 052 2657 </p>
               <p><i class="fas fa-envelope"></i> madu@1stgeomatics.com</p>
               <p><i class="fas fa-envelope"></i> Richard@1sthgeomatics.com </p>
             </div>
@@ -402,6 +405,9 @@
         </div>
       </div>
     </footer>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
@@ -497,14 +503,29 @@
                 console.warn("Auto-reply failed. Check credentials:", emailError);
               }
 
-              // 6. Success State
-              alert("Thank you! Your message has been sent successfully.");
+              // 6. Success State with SweetAlert2
+              Swal.fire({
+                icon: 'success',
+                title: 'Message Sent!',
+                text: 'Thank you for contacting us. We will get back to you shortly.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#2c5f2d',
+                timer: 5000,
+                timerProgressBar: true
+              });
               form.reset();
               
           } catch (error) {
-              // 5. Error Handling
+              // 5. Error Handling with SweetAlert2
               console.error('Submission Error:', error);
-              alert("Unable to send message. Please ensure you are connected to the internet or contact us directly.");
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Unable to send message. Please check your internet connection or contact us directly.',
+                confirmButtonText: 'Try Again',
+                confirmButtonColor: '#d33',
+                footer: '<a href="mailto:madu@1stgeomatics.com">Email us directly</a>'
+              });
           } finally {
               // 6. Cleanup & Reset State
               submitBtn.textContent = originalBtnText;

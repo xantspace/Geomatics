@@ -399,6 +399,7 @@ textarea {
   cursor: pointer;
   font-weight: 600;
   transition: var(--transition);
+  border-radius: 5px;
 }
 .btn-submit:hover {
   background: var(--text-main);
