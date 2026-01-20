@@ -359,6 +359,7 @@
               <!-- EmailJS compatible fields -->
               <input type="hidden" name="from_name" id="from_name" value="">
               <input type="hidden" name="reply_to" id="reply_to" value="">
+              <input type="hidden" name="company_email" id="company_email" value="madu@1stgeomatics.com">
               
               <div class="form-group full">
                 <select name="service" required>
@@ -430,7 +431,7 @@
               <p><i class="fas fa-map-marker-alt"></i> 156 Ikot-Ekpene Road, Aba, Abia State, Nigeria</p>
               <p><i class="fas fa-phone"></i> +234 (0) 703 052 2657 </p>
               <p><i class="fas fa-envelope"></i> madu@1stgeomatics.com</p>
-              <p><i class="fas fa-envelope"></i> Richard@1sthgeomatics.com </p>
+              <p><i class="fas fa-envelope"></i> Richard@1stgeomatics.com </p>
             </div>
           </div>
         </div>
@@ -530,20 +531,20 @@
               // Send BOTH emails (company notification + client auto-reply)
               // EmailJS allows sending to multiple templates
               
-              // 1. Send notification to company
-              console.log("Sending company notification...");
+              // 1. Send notification to company (madu@1stgeomatics.com)
+              console.log("Sending company notification to madu@1stgeomatics.com...");
               const companyEmail = await emailjs.sendForm(
                 "service_je65qs3", 
-                "template_zl4i6il",  // Your company notification template
+                "template_zl4i6il",  // Configured to notify the company
                 form
               );
               console.log("Company notification sent!", companyEmail);
 
-              // 2. Send auto-reply to client
-              console.log("Sending client auto-reply...");
+              // 2. Send confirmation auto-reply to client
+              console.log(`Sending client auto-reply to ${userEmail}...`);
               const clientEmail = await emailjs.sendForm(
                 "service_je65qs3", 
-                "template_bofccje",  // You can use same template or create a separate one
+                "template_bofccje",  // Configured as an auto-reply for the client
                 form
               );
               console.log("Client auto-reply sent!", clientEmail);
